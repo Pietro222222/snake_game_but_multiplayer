@@ -9,7 +9,7 @@ use apple::Apple;
 use constants::*;
 use game::*;
 use grid::*;
-use pancurses::{endwin, napms, Input};
+use pancurses::{endwin, napms, Input, Window};
 use snake::*;
 
 fn get_apples(amount: u8) -> Vec<Apple> {
@@ -36,6 +36,19 @@ fn did_snake_eat_any<'a>(
         }
     }
     (false, None)
+}
+
+fn print_score(window: &Window, snake1: &Snake, snake2: &Snake) {
+    window.mvprintw(
+        GRID_HEIGHT as i32 + 3,
+        0,
+        format!("SCORE PLAYER1: {}", snake1.pieces.len() - 2),
+    );
+    window.mvprintw(
+        GRID_HEIGHT as i32 + 4,
+        0,
+        format!("SCORE PLAYER2: {}", snake2.pieces.len() - 2),
+    );
 }
 
 fn main() {
@@ -85,9 +98,10 @@ fn main() {
                 _ => {}
             }
         }
-        if (timer_count >= 4) {
+        if (timer_count >= 3) {
             snake.move_snake();
             snake2.move_snake();
+            print_score(&window, &snake, &snake2);
             if snake.is_game_over() {
                 window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player1 died!");
                 break 'mainloop;
@@ -98,14 +112,14 @@ fn main() {
                 window.mvprintw(
                     GRID_HEIGHT as i32 + 1,
                     0,
-                    "Player2 died after colliding with player1!",
+                    "Player1 died after colliding with Player2!",
                 );
                 break 'mainloop;
             } else if snake.is_colliding(&snake2) {
                 window.mvprintw(
                     GRID_HEIGHT as i32 + 1,
                     0,
-                    "Player1 died after colliding with player2!",
+                    "Player2 died after colliding with Player1!",
                 );
                 break 'mainloop;
             }

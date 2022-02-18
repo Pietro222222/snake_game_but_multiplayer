@@ -117,7 +117,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "snake-game-but-rust"
+name = "snake-game-multiplayer"
 version = "0.1.0"
 dependencies = [
  "pancurses",
