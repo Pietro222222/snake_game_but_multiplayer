@@ -18,7 +18,7 @@ impl Grid {
         init_pair(1, 7, 2);
         init_pair(2, 7, 1);
         init_pair(3, 7, 0);
-
+        init_pair(4, 7, 3);
         Self {
             height: h,
             width: w,
@@ -61,6 +61,10 @@ impl Grid {
                         window.attrset(COLOR_PAIR(1));
                         window.addch(character.to_owned());
                         window.attroff(COLOR_PAIR(1));
+                    } else if *character == '+' || *character == '0' {
+                        window.attrset(COLOR_PAIR(4));
+                        window.addch(character.to_owned());
+                        window.attroff(COLOR_PAIR(4));
                     } else if *character == 'O' {
                         window.attrset(COLOR_PAIR(2));
                         window.addch(character.to_owned());

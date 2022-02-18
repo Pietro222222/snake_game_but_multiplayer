@@ -28,20 +28,32 @@ pub enum SnakeDirection {
     Down,
 }
 
+#[derive(PartialEq, Eq)]
+pub enum SnakePlayers {
+    Player1, // ====@
+    Player2, // ++++0
+}
+
 pub struct Snake {
     pub direction: SnakeDirection,
     pub pieces: Vec<SnakePiece>,
+    pub player: SnakePlayers,
 }
 
 impl Snake {
-    pub fn new() -> Self {
-        let head = SnakePiece::new(Coord::new(GRID_HEIGHT / 2, GRID_WIDTH / 2), true);
+    pub fn new(player: SnakePlayers) -> Self {
+        let head = if player == SnakePlayers::Player1 {
+            SnakePiece::new(Coord::new(0, GRID_WIDTH / 2), true)
+        } else {
+            SnakePiece::new(Coord::new(GRID_HEIGHT - 1, GRID_WIDTH / 2), true)
+        };
         let mut body = SnakePiece::new(Coord::new(0, 0), false);
         head.append(&mut body);
         let pieces = vec![head, body];
         Self {
             direction: SnakeDirection::Right,
             pieces: pieces,
+            player: player,
         }
     }
     pub fn append_piece(&mut self, mut piece: SnakePiece) {
@@ -168,6 +180,16 @@ impl Snake {
         }
         return false;
     }
+    pub fn is_colliding(&self, snake: &Snake) -> bool {
+        let other_head = snake.pieces.get(0).unwrap();
+        for i in &self.pieces[1..] {
+            if other_head.coord.height == i.coord.height && other_head.coord.width == i.coord.width
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 impl GridDrawable for Snake {
@@ -177,7 +199,20 @@ impl GridDrawable for Snake {
                 grid.draw_in_pos(
                     i.coord.height,
                     i.coord.width,
-                    if i.head == true { '@' } else { '=' },
+                    /*ATTENTION GORE CODE*/
+                    if i.head == true {
+                        if self.player == SnakePlayers::Player1 {
+                            '@'
+                        } else {
+                            '0'
+                        }
+                    } else {
+                        if self.player == SnakePlayers::Player1 {
+                            '='
+                        } else {
+                            '+'
+                        }
+                    },
                 );
             }
         }
