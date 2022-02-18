@@ -3,7 +3,7 @@ its just a multiplayer snake game, but written in rust
 
 # WHY?
 
-i wrote a snake game, but i thought it was to let my brother play it, so i decided to implement multiplayer
+i wrote a snake game, but i thought it was a good idea to let my brother play it, so i decided to implement multiplayer
 
 
 # why a different repo 
