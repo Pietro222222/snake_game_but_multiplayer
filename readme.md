@@ -1,6 +1,14 @@
 # Game
-its just a normal snake game, but written in rust
+its just a multiplayer snake game, but written in rust
 
+# WHY?
+
+i wrote a snake game, but i thought it was to let my brother play it, so i decided to implement multiplayer
+
+
+# why a different repo 
+
+because im too lazy to implement options such as --enable-multiplayer so theyre different binaries
 
 # Controls 
 
