@@ -9,7 +9,7 @@ use apple::Apple;
 use constants::*;
 use game::*;
 use grid::*;
-use pancurses::{endwin, napms, Input, Window};
+use pancurses::{curs_set, endwin, napms, Input, Window};
 use snake::*;
 
 fn get_apples(amount: u8) -> Vec<Apple> {
@@ -54,6 +54,7 @@ fn print_score(window: &Window, snake1: &Snake, snake2: &Snake) {
 fn main() {
     let mut window = init_game();
     window.keypad(true);
+    curs_set(0);
 
     let mut grid = Grid::new(GRID_HEIGHT, GRID_WIDTH);
     let mut snake = Snake::new(SnakePlayers::Player1);
