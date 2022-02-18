@@ -88,11 +88,25 @@ fn main() {
         if (timer_count >= 4) {
             snake.move_snake();
             snake2.move_snake();
-            if snake.is_game_over()
-                || snake2.is_game_over()
-                || snake2.is_colliding(&snake)
-                || snake.is_colliding(&snake2)
-            {
+            if snake.is_game_over() {
+                window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player1 died!");
+                break 'mainloop;
+            } else if snake2.is_game_over() {
+                window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player2 died!");
+                break 'mainloop;
+            } else if snake2.is_colliding(&snake) {
+                window.mvprintw(
+                    GRID_HEIGHT as i32 + 1,
+                    0,
+                    "Player2 died after colliding with player1!",
+                );
+                break 'mainloop;
+            } else if snake.is_colliding(&snake2) {
+                window.mvprintw(
+                    GRID_HEIGHT as i32 + 1,
+                    0,
+                    "Player1 died after colliding with player2!",
+                );
                 break 'mainloop;
             }
 
@@ -121,13 +135,11 @@ fn main() {
         napms(20);
     }
 
-    for i in 0..GRID_HEIGHT {
-        for j in 0..GRID_WIDTH {
-            window.mvprintw(i as i32, j as i32, " ");
-        }
-    }
-
-    window.mvprintw(10, 10, "GAME OVER! PRESS ANYTHING TO QUIT");
+    window.mvprintw(
+        GRID_HEIGHT as i32 + 2,
+        0,
+        "GAME OVER! PRESS ANYTHING TO QUIT",
+    );
     window.refresh();
 
     window.nodelay(false);
