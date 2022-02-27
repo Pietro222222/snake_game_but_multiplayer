@@ -42,12 +42,12 @@ fn print_score(window: &Window, snake1: &Snake, snake2: &Snake) {
     window.mvprintw(
         GRID_HEIGHT as i32 + 3,
         0,
-        format!("SCORE PLAYER1: {}", snake1.pieces.len() - 2),
+        format!("SCORE PLAYER1: {}    ", snake1.pieces.len() - 2),
     );
     window.mvprintw(
         GRID_HEIGHT as i32 + 4,
         0,
-        format!("SCORE PLAYER2: {}", snake2.pieces.len() - 2),
+        format!("SCORE PLAYER2: {}    ", snake2.pieces.len() - 2),
     );
 }
 
@@ -60,7 +60,7 @@ fn main() {
     let mut snake = Snake::new(SnakePlayers::Player1);
     let mut snake2 = Snake::new(SnakePlayers::Player2);
     let mut timer_count = 0;
-    let mut apples = get_apples(40);
+    let mut apples = get_apples(100);
     snake.draw_in_grid(&mut grid);
 
     grid.draw(&mut window);
@@ -104,25 +104,54 @@ fn main() {
             snake2.move_snake();
             print_score(&window, &snake, &snake2);
             if snake.is_game_over() {
-                window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player1 died!");
-                break 'mainloop;
+                if snake.pieces.len() - 2 == 0 {
+                    window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player1 died!");
+                    break 'mainloop;
+                }
+                snake.reset();
+
+                //break 'mainloop;
             } else if snake2.is_game_over() {
-                window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player2 died!");
-                break 'mainloop;
+                //window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player2 died!");
+                if snake2.pieces.len() - 2 == 0 {
+                    window.mvprintw(GRID_HEIGHT as i32 + 1, 0, "Player2 died!");
+                    break 'mainloop;
+                }
+                snake2.reset();
+                //break 'mainloop;
             } else if snake2.is_colliding(&snake) {
-                window.mvprintw(
-                    GRID_HEIGHT as i32 + 1,
-                    0,
-                    "Player1 died after colliding with Player2!",
-                );
-                break 'mainloop;
+                // window.mvprintw(
+                //     GRID_HEIGHT as i32 + 1,
+                //     0,
+                //     "Player1 died after colliding with Player2!",
+                // );
+                if snake.pieces.len() - 2 == 0 {
+                    window.mvprintw(
+                        GRID_HEIGHT as i32 + 1,
+                        0,
+                        "Player1 died after colliding with Player2!",
+                    );
+                    break 'mainloop;
+                }
+                snake.reset();
+                //break 'mainloop;
             } else if snake.is_colliding(&snake2) {
-                window.mvprintw(
-                    GRID_HEIGHT as i32 + 1,
-                    0,
-                    "Player2 died after colliding with Player1!",
-                );
-                break 'mainloop;
+                // window.mvprintw(
+                //     GRID_HEIGHT as i32 + 1,
+                //     0,
+                //     "Player2 died after colliding with Player1!",
+                // );
+
+                if snake2.pieces.len() - 2 == 0 {
+                    window.mvprintw(
+                        GRID_HEIGHT as i32 + 1,
+                        0,
+                        "Player2 died after colliding with Player1!",
+                    );
+                    break 'mainloop;
+                }
+                snake2.reset();
+                //break 'mainloop;
             }
 
             let res = did_snake_eat_any(&mut apples, &snake);
@@ -158,7 +187,18 @@ fn main() {
     window.refresh();
 
     window.nodelay(false);
-    window.getch();
+    while (true) {
+        if let Some(sex) = window.getch() {
+            match sex {
+                Input::Character(c) => {
+                    if c == 'q' || c == 'Q' {
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
 
     endwin();
 }

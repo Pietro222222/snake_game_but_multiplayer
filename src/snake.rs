@@ -2,7 +2,7 @@ use crate::apple::Apple;
 use crate::constants::*;
 use crate::grid::*;
 use crate::utils::Coord;
-
+#[derive(Clone, Copy)]
 pub struct SnakePiece /* as you can see, im not good with names*/ {
     pub coord: Coord,
     pub head: bool,
@@ -182,13 +182,20 @@ impl Snake {
     }
     pub fn is_colliding(&self, snake: &Snake) -> bool {
         let other_head = snake.pieces.get(0).unwrap();
-        for i in &self.pieces[1..] {
+        for i in &self.pieces {
             if other_head.coord.height == i.coord.height && other_head.coord.width == i.coord.width
             {
                 return true;
             }
         }
         return false;
+    }
+    pub fn reset(&mut self) {
+        let head = self.pieces.get(0).unwrap().to_owned();
+        let mut body = SnakePiece::new(Coord::new(0, 0), false);
+        head.append(&mut body);
+        let pieces = vec![head, body];
+        self.pieces = pieces;
     }
 }
 
